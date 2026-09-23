@@ -1,1 +1,71 @@
+.home {
+  min-height: 100vh;
+  padding: 24px;
+  background: #F7F8FA;
+  box-sizing: border-box;
+}
 
+.locale-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.locale-item {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #fff;
+  color: #808080;
+  font-size: 24px;
+}
+
+.locale-item--active {
+  background: #1677FF;
+  color: #fff;
+}
+
+.hero {
+  margin-bottom: 32px;
+}
+
+.hero-title {
+  display: block;
+  font-size: 44px;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin-bottom: 8px;
+}
+
+.hero-subtitle {
+  display: block;
+  font-size: 28px;
+  color: #808080;
+}
+
+.destination-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.destination-card {
+  width: calc(50% - 8px);
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.destination-flag {
+  font-size: 56px;
+  line-height: 1;
+}
+
+.destination-name {
+  font-size: 28px;
+  color: #1A1A1A;
+}
