@@ -12,8 +12,8 @@
   "scripts": {
     "build:weapp": "taro build --type weapp",
     "build:alipay": "taro build --type alipay",
-    "dev:weapp": "npm run build:weapp -- --watch",
-    "dev:alipay": "npm run build:alipay -- --watch",
+    "dev:weapp": "taro build --type weapp --watch",
+    "dev:alipay": "taro build --type alipay --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "browserslist": [
