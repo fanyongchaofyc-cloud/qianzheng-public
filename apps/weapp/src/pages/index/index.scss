@@ -41,31 +41,3 @@
   font-size: 28px;
   color: #808080;
 }
-
-.destination-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.destination-card {
-  width: calc(50% - 8px);
-  box-sizing: border-box;
-  background: #fff;
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.destination-flag {
-  font-size: 56px;
-  line-height: 1;
-}
-
-.destination-name {
-  font-size: 28px;
-  color: #1A1A1A;
-}

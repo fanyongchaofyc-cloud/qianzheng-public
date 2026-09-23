@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { View, Text } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
+import { Cell } from '@nutui/nutui-react-taro'
 import { useI18n, LocaleCode } from '../../i18n'
 import { destinations } from '../../data/destinations'
 import './index.scss'
@@ -46,14 +47,16 @@ export default function Index () {
         <Text className='hero-subtitle'>{t('home.subtitle')}</Text>
       </View>
 
-      <View className='destination-grid'>
+      <Cell.Group>
         {destinations.map(item => (
-          <View key={item.code} className='destination-card' onClick={() => openGuide(item.code)}>
-            <Text className='destination-flag'>{item.flag}</Text>
-            <Text className='destination-name'>{t(item.nameKey)}</Text>
-          </View>
+          <Cell
+            key={item.code}
+            title={`${item.flag}  ${t(item.nameKey)}`}
+            clickable
+            onClick={() => openGuide(item.code)}
+          />
         ))}
-      </View>
+      </Cell.Group>
     </View>
   )
 }

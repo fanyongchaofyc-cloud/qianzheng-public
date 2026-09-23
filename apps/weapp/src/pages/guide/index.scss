@@ -46,118 +46,14 @@
   gap: 16px;
 }
 
-.guide-option {
-  background: #fff;
-  color: #1A1A1A;
-  border-radius: 12px;
-  font-size: 30px;
-  text-align: left;
-  padding: 0 24px;
-  height: 88px;
-  line-height: 88px;
-}
-
-.guide-option::after {
-  border: none;
-}
-
-.guide-back {
-  background: transparent;
-  color: #1677FF;
-  font-size: 28px;
-}
-
-.guide-back::after {
-  border: none;
-}
-
-.guide-result-title {
-  display: block;
-  font-size: 36px;
-  font-weight: 600;
-  color: #1A1A1A;
-  margin-bottom: 24px;
-}
-
-.guide-summary {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.guide-summary-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px 24px;
-}
-
-.guide-summary-question {
-  font-size: 28px;
-  color: #808080;
-}
-
-.guide-summary-answer {
-  font-size: 28px;
-  color: #1A1A1A;
-  font-weight: 600;
-}
-
-.checklist {
+.guide-result {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 24px;
-}
-
-.checklist-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-}
-
-.checklist-index {
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  background: #1677FF;
-  color: #fff;
-  font-size: 24px;
-  text-align: center;
-  line-height: 40px;
-}
-
-.checklist-name {
-  flex: 1;
-  font-size: 30px;
-  color: #1A1A1A;
-}
-
-.checklist-required {
-  color: #FF3141;
-  font-size: 30px;
 }
 
 .guide-disclaimer {
   display: block;
   font-size: 24px;
   color: #808080;
-  margin-bottom: 24px;
-}
-
-.guide-restart {
-  background: #1677FF;
-  color: #fff;
-  border-radius: 12px;
-  font-size: 30px;
-}
-
-.guide-restart::after {
-  border: none;
 }

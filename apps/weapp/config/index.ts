@@ -7,7 +7,7 @@ export default defineConfig<'webpack5'>(async (merge, _ctx) => {
   const baseConfig: UserConfigExport<'webpack5'> = {
     projectName: 'qianzheng-weapp',
     date: '2026-9-23',
-    designWidth: 750,
+    designWidth: 375,
     deviceRatio: {
       640: 2.34 / 2,
       750: 1,
@@ -31,7 +31,9 @@ export default defineConfig<'webpack5'>(async (merge, _ctx) => {
       postcss: {
         pxtransform: {
           enable: true,
-          config: {}
+          config: {
+            selectorBlackList: ['nut-']
+          }
         },
         cssModules: {
           enable: false,

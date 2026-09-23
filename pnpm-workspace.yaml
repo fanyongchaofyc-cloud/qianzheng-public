@@ -3,7 +3,13 @@ packages:
   - "packages/*"
   - "scripts/*"
 
+allowBuilds:
+  '@nutui/nutui-react-taro': set this to true or false
+  '@swc/core': set this to true or false
+  '@tarojs/cli': set this to true or false
+
 onlyBuiltDependencies:
+  - "@nutui/nutui-react-taro"
   - "@tarojs/binding"
   - "@tarojs/cli"
   - "@swc/core"
@@ -14,14 +20,3 @@ onlyBuiltDependencies:
   - "@parcel/watcher"
   - "core-js"
   - "core-js-pure"
-allowBuilds:
-  '@parcel/watcher': set this to true or false
-  '@prisma/client': set this to true or false
-  '@prisma/engines': set this to true or false
-  '@swc/core': set this to true or false
-  '@tarojs/binding': set this to true or false
-  '@tarojs/cli': set this to true or false
-  core-js: set this to true or false
-  core-js-pure: set this to true or false
-  esbuild: set this to true or false
-  prisma: set this to true or false
