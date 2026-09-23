@@ -1,0 +1,14 @@
+{
+  "name": "qianzheng",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.16.0",
+  "scripts": {
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "extract": "turbo run extract"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3"
+  }
+}
