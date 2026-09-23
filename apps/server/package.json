@@ -1,0 +1,21 @@
+{
+  "name": "@vcc/server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "签证指南后端服务（数据库设计先行）",
+  "scripts": {
+    "prisma:validate": "prisma validate --schema prisma/schema.prisma",
+    "prisma:generate": "prisma generate --schema prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "prisma": "^6.2.1",
+    "@prisma/client": "^6.2.1",
+    "tsx": "^4.19.2",
+    "@types/node": "^18",
+    "typescript": "^5.4.5"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma",
+    "seed": "tsx prisma/seed.ts"
+  }
+}

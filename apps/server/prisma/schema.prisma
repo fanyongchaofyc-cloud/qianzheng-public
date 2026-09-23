@@ -1,0 +1,338 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Locale {
+  zh_CN
+  en
+  ja
+  ko
+}
+
+enum VisaCategoryCode {
+  tourist
+  student
+  business
+  family_visit
+}
+
+enum PolicyStatus {
+  draft
+  published
+  retired
+}
+
+enum VisaCaseStatus {
+  draft
+  in_progress
+  ready_to_submit
+  submitted
+  completed
+  archived
+}
+
+enum NotificationChannel {
+  sms
+  email
+  mini_program
+  push
+  inbox
+}
+
+enum NotificationStatus {
+  pending
+  sent
+  failed
+  read
+}
+
+model User {
+  id                String         @id @default(cuid())
+  phone             String?        @unique
+  language          Locale         @default(zh_CN)
+  timezone          String         @default("Asia/Shanghai")
+  notificationPrefs Json?
+  authProviders     Json?
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+  cases             VisaCase[]
+  notifications     Notification[]
+
+  @@map("users")
+}
+
+model Destination {
+  id         String         @id @default(cuid())
+  code       String         @unique
+  name       Json
+  region     String?
+  enabled    Boolean        @default(true)
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+  categories VisaCategory[]
+  feeItems   FeeItem[]
+  cases      VisaCase[]
+
+  @@map("destinations")
+}
+
+model VisaCategory {
+  id            String            @id @default(cuid())
+  destinationId String            @map("destination_id")
+  code          VisaCategoryCode
+  name          Json
+  enabled       Boolean           @default(true)
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  destination   Destination       @relation(fields: [destinationId], references: [id])
+  scenarios     Scenario[]
+  cases         VisaCase[]
+
+  @@unique([destinationId, code])
+  @@map("visa_categories")
+}
+
+model Scenario {
+  id             String                @id @default(cuid())
+  visaCategoryId String                @map("visa_category_id")
+  code           String
+  name           Json
+  description    Json?
+  enabled        Boolean               @default(true)
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+  category       VisaCategory          @relation(fields: [visaCategoryId], references: [id])
+  conditions     ScenarioCondition[]
+  requirements   ScenarioRequirement[]
+  steps          ScenarioProcessStep[]
+
+  @@unique([visaCategoryId, code])
+  @@map("scenarios")
+}
+
+model Condition {
+  id        String              @id @default(cuid())
+  code      String              @unique
+  name      Json
+  inputType String              @map("input_type")
+  options   Json?
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+  scenarios ScenarioCondition[]
+
+  @@map("conditions")
+}
+
+model ScenarioCondition {
+  id          String    @id @default(cuid())
+  scenarioId  String    @map("scenario_id")
+  conditionId String    @map("condition_id")
+  operator    String    @default("eq")
+  expected    Json
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  scenario    Scenario  @relation(fields: [scenarioId], references: [id])
+  condition   Condition @relation(fields: [conditionId], references: [id])
+
+  @@unique([scenarioId, conditionId])
+  @@map("scenario_conditions")
+}
+
+model RequirementItem {
+  id          String                @id @default(cuid())
+  code        String                @unique
+  name        Json
+  description Json?
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
+  scenarios   ScenarioRequirement[]
+  caseItems   CaseItem[]
+
+  @@map("requirement_items")
+}
+
+model ScenarioRequirement {
+  id                String          @id @default(cuid())
+  scenarioId        String          @map("scenario_id")
+  requirementItemId String          @map("requirement_item_id")
+  required          Boolean         @default(true)
+  quantity          Int             @default(1)
+  sortOrder         Int             @default(0) @map("sort_order")
+  notes             Json?
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  scenario          Scenario        @relation(fields: [scenarioId], references: [id])
+  requirementItem   RequirementItem @relation(fields: [requirementItemId], references: [id])
+
+  @@unique([scenarioId, requirementItemId])
+  @@map("scenario_requirements")
+}
+
+model ProcessStep {
+  id          String                @id @default(cuid())
+  code        String                @unique
+  title       Json
+  description Json?
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
+  scenarios   ScenarioProcessStep[]
+
+  @@map("process_steps")
+}
+
+model ScenarioProcessStep {
+  id            String      @id @default(cuid())
+  scenarioId    String      @map("scenario_id")
+  processStepId String      @map("process_step_id")
+  sortOrder     Int         @default(0) @map("sort_order")
+  estimatedDays Int?        @map("estimated_days")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  scenario      Scenario    @relation(fields: [scenarioId], references: [id])
+  processStep   ProcessStep @relation(fields: [processStepId], references: [id])
+
+  @@unique([scenarioId, processStepId])
+  @@map("scenario_process_steps")
+}
+
+model FeeItem {
+  id            String      @id @default(cuid())
+  destinationId String      @map("destination_id")
+  code          String
+  name          Json
+  amountMinor   Int         @map("amount_minor")
+  currency      String      @default("CNY")
+  optional      Boolean     @default(false)
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  destination   Destination @relation(fields: [destinationId], references: [id])
+
+  @@map("fee_items")
+}
+
+model TimelineEvent {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  name         Json
+  reminderDays Int?     @map("reminder_days")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("timeline_events")
+}
+
+model PolicyVersion {
+  id             String       @id @default(cuid())
+  destinationId  String       @map("destination_id")
+  visaCategoryId String       @map("visa_category_id")
+  version        String
+  status         PolicyStatus @default(draft)
+  effectiveAt    DateTime     @map("effective_at")
+  notes          String?
+  publishedAt    DateTime?    @map("published_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  cases          VisaCase[]
+
+  @@map("policy_versions")
+}
+
+model VisaCase {
+  id              String         @id @default(cuid())
+  userId          String         @map("user_id")
+  destinationId   String         @map("destination_id")
+  visaCategoryId  String         @map("visa_category_id")
+  policyVersionId String?        @map("policy_version_id")
+  answers         Json?
+  status          VisaCaseStatus @default(draft)
+  progress        Int            @default(0)
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+  user            User           @relation(fields: [userId], references: [id])
+  destination     Destination    @relation(fields: [destinationId], references: [id])
+  category        VisaCategory   @relation(fields: [visaCategoryId], references: [id])
+  policyVersion   PolicyVersion? @relation(fields: [policyVersionId], references: [id])
+  items           CaseItem[]
+
+  @@map("visa_cases")
+}
+
+model CaseItem {
+  id                String          @id @default(cuid())
+  visaCaseId        String          @map("visa_case_id")
+  requirementItemId String          @map("requirement_item_id")
+  status            String          @default("not_started")
+  note              String?
+  attachments       Json?
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  visaCase          VisaCase        @relation(fields: [visaCaseId], references: [id])
+  requirementItem   RequirementItem @relation(fields: [requirementItemId], references: [id])
+
+  @@map("case_items")
+}
+
+model Content {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       Json
+  body        Json
+  status      String    @default("draft")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("contents")
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  category  String?
+  question  Json
+  answer    Json
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("faqs")
+}
+
+model NotificationTemplate {
+  id        String              @id @default(cuid())
+  code      String
+  channel   NotificationChannel
+  locale    Locale
+  subject   String?
+  body      String
+  variables Json?
+  version   Int                 @default(1)
+  status    String              @default("active")
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+  notifications Notification[]
+
+  @@unique([code, channel, locale, version])
+  @@map("notification_templates")
+}
+
+model Notification {
+  id         String              @id @default(cuid())
+  userId     String              @map("user_id")
+  templateId String              @map("template_id")
+  channel    NotificationChannel
+  status     NotificationStatus  @default(pending)
+  payload    Json?
+  error      String?
+  sentAt     DateTime?           @map("sent_at")
+  createdAt  DateTime            @default(now()) @map("created_at")
+  updatedAt  DateTime            @updatedAt @map("updated_at")
+  user       User                @relation(fields: [userId], references: [id])
+  template   NotificationTemplate @relation(fields: [templateId], references: [id])
+
+  @@map("notifications")
+}
